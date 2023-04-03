@@ -5,7 +5,6 @@ description = "Replicating the code and results of the paper \"Simple Black-box 
 authors = ["Eric Kolibacz"]
 license = "MIT license"
 readme = "README.md"
-packages = [{include = "replicating_simple_blackbox_attack"}]
 
 [tool.poetry.dependencies]
 python = "^3.8"
