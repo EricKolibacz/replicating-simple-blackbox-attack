@@ -31,7 +31,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install poetry
-        poetry install  --only=code_style
+        poetry install
     - name: Reformat code with black
       run: |
         poetry run black *.py
