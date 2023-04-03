@@ -31,7 +31,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install poetry
-        poetry install
+        poetry install  --only=code_style
     - name: Reformat code with black
       run: |
         poetry run black *.py
@@ -46,6 +46,6 @@ jobs:
         poetry run pylint *.py
     - name: Lint jupyter notebooks
       run: |  # black has own jupyter notebook support
-        poetry run nbqa isort *.py
-        poetry run nbqa pylint *.py
-        poetry run nbqa pycodestyle *.py
+        poetry run nbqa isort *.ipynb
+        poetry run nbqa pylint *.ipynb
+        poetry run nbqa pycodestyle *.ipynb
