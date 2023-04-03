@@ -19,7 +19,7 @@ class ImageNetDataSet(Dataset):
         return len(self.labels)
 
     def __getitem__(self, idx):
-        x = Image.open(path.join(self.image_root, f"ILSVRC2012_val_{idx+1:08d}.JPEG")).convert("RGB")
+        image = Image.open(path.join(self.image_root, f"ILSVRC2012_val_{idx+1:08d}.JPEG")).convert("RGB")
         if self.transform:
-            x = self.transform(x)
-        return x, self.labels[idx]
+            image = self.transform(image)
+        return image, self.labels[idx]
