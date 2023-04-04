@@ -6,6 +6,7 @@ import numpy as np
 import torch
 
 
+# pylint: disable-msg=R0903
 class SearchVectors(ABC):
     """Abstract class for the set of search vectors"""
 
