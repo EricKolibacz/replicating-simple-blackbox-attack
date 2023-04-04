@@ -1,8 +1,11 @@
 """Functionality to receive data from the ImageNet dataset"""
 
+import json
 from os import path
 
 import numpy as np
+import pandas as pd
+from mat4py import loadmat
 from PIL import Image
 from torch.utils.data import Dataset
 
@@ -10,10 +13,23 @@ from torch.utils.data import Dataset
 class ImageNetDataSet(Dataset):
     """Pytorch Dataset for ImageNet"""
 
-    def __init__(self, image_root, label_file, transform=None):
+    def __init__(self, image_root, label_file, meta_file: str, transform=None):
         self.image_root = image_root
         self.labels = np.fromfile(label_file, sep="\n")
         self.transform = transform
+
+        self.meta = pd.DataFrame.from_dict(loadmat(meta_file)["synsets"])
+        self.meta.set_index("WNID", inplace=True)
+        with open("imagenet_class_index.json", "r", encoding="utf-8") as file:
+            pytorch_label_indices = json.load(file)
+
+        for label, (wnid, label_str) in pytorch_label_indices.items():
+            self.meta.loc[wnid, "label"] = label
+            self.meta.loc[wnid, "label_str"] = label_str.replace("_", " ")
+
+        self.meta.set_index("ILSVRC2012_ID", inplace=True)
+        self.labels = [self.meta.loc[label, "label"] for label in self.labels]
+        self.meta.set_index("label", inplace=True)
 
     def __len__(self):
         return len(self.labels)
