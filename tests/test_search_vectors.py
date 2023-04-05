@@ -40,6 +40,14 @@ def test_cartesian_vector_size():
     assert vector.size() == IMAGE.size()
 
 
+def test_cartesian_vector_type():
+    """Testing if cartesian search vector class returns a vector with correct type"""
+    base = CartesianSearchVectors(IMAGE.size())
+    vector = base.get_random_vector()
+
+    assert vector.dtype == torch.float
+
+
 def test_dct_correctly_initialized():
     """Testing if dct search vector class has implemented required abstract methods"""
     DCTSearchVectors(IMAGE.size(), RATIO)
@@ -67,6 +75,14 @@ def test_dct_vector_size():
     vector = base.get_random_vector()
 
     assert vector.size() == IMAGE.size()
+
+
+def test_dct_vector_type():
+    """Testing if dct search vector class returns a vector with correct type"""
+    base = DCTSearchVectors(IMAGE.size(), RATIO)
+    vector = base.get_random_vector()
+
+    assert vector.dtype == torch.float
 
 
 def test_inverse_dct_2d():
