@@ -1,5 +1,7 @@
 """Method proposed by Guo et al."""
 
+from typing import Union
+
 import torch
 
 from simple_blackbox_attack.set_interface import SearchVectors
@@ -19,20 +21,17 @@ def simba(model, image: torch.Tensor, label: int, basis: SearchVectors, step_siz
     Returns:
         torch.Tensor: adversarial image
     """
-    pertubation: torch.Tensor = torch.zeros(image.shape)
+    device = model.get_device()
+    pertubation: torch.Tensor = torch.zeros(image.shape).to(device)
 
-    logits = model(image.unsqueeze(0))
-    probabilities = torch.nn.functional.softmax(logits[0], dim=0)
-    probability, prediction = torch.topk(probabilities, 1)
+    probability, prediction = predict(model, image.to(device))
 
     while prediction.item() == label:
-        search_vector = basis.get_random_vector()
+        search_vector = basis.get_random_vector().to(device)
         for alpha in [-step_size, step_size]:
             pertubed_image: torch.Tensor = image + pertubation + alpha * search_vector
 
-            logits = model(pertubed_image.unsqueeze(0))
-            probabilities = torch.nn.functional.softmax(logits[0], dim=0)
-            probability_perturbed, prediction_perturbed = torch.topk(probabilities, 1)
+            probability_perturbed, prediction_perturbed = predict(model, pertubed_image.to(device))
 
             if probability_perturbed < probability:
                 print(probability)
@@ -41,3 +40,11 @@ def simba(model, image: torch.Tensor, label: int, basis: SearchVectors, step_siz
                 prediction = prediction_perturbed
 
     return pertubation
+
+
+def predict(model, image: torch.Tensor) -> Union[torch.Tensor, torch.Tensor]:
+    """Simple helper function to predict class (with probability)"""
+    logits = model(image.unsqueeze(0))
+    probabilities = torch.nn.functional.softmax(logits[0], dim=0)
+    probability, prediction = torch.topk(probabilities, 1)
+    return probability, prediction
