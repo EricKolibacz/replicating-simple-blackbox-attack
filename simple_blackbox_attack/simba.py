@@ -47,8 +47,9 @@ def simba(
             probability_perturbed, prediction_perturbed = torch.topk(probabilities, 1)
 
             if probability_perturbed < probability:
+                if steps % 512 == 0:
+                    print(f"{steps}: Label probability {probability.item():.4f} - queries {queries}")
                 steps += 1
-                print(probability)
                 pertubation += alpha * search_vector
                 probability = probability_perturbed
                 prediction = prediction_perturbed
