@@ -7,6 +7,7 @@ import torch
 from simple_blackbox_attack.set_interface import SearchVectors
 
 
+# pylint: disable-msg=R0913,R0914
 def simba(
     model, image: torch.Tensor, label: int, basis: SearchVectors, step_size: float, budget: float
 ) -> torch.Tensor:
