@@ -1,5 +1,7 @@
 """Method proposed by Guo et al."""
 
+from typing import Union
+
 import torch
 
 from simple_blackbox_attack.set_interface import SearchVectors
@@ -25,16 +27,15 @@ def simba(
         int: number of base vectors included in the pertubation
         int: number of queries sent to the model
     """
-    pertubation: torch.Tensor = torch.zeros(image.shape)
+    device = model.get_device()
+    pertubation: torch.Tensor = torch.zeros(image.shape).to(device)
 
-    logits = model(image.unsqueeze(0))
-    probabilities = torch.nn.functional.softmax(logits[0], dim=0)
-    probability, prediction = torch.topk(probabilities, 1)
+    probability, prediction = predict(model, image.to(device))
 
     steps, queries = 0, 0
     while prediction.item() == label and steps + 1 < (budget / step_size) ** 2:
         try:
-            search_vector = basis.get_random_vector()
+            search_vector = basis.get_random_vector().to(device)
         except IndexError:
             print("Evaluated all vectors")
             break
@@ -42,9 +43,7 @@ def simba(
             pertubed_image: torch.Tensor = image + pertubation + alpha * search_vector
 
             queries += 1
-            logits = model(pertubed_image.unsqueeze(0))
-            probabilities = torch.nn.functional.softmax(logits[0], dim=0)
-            probability_perturbed, prediction_perturbed = torch.topk(probabilities, 1)
+            probability_perturbed, prediction_perturbed = predict(model, pertubed_image.to(device))
 
             if probability_perturbed < probability:
                 if steps % 512 == 0:
@@ -55,3 +54,11 @@ def simba(
                 prediction = prediction_perturbed
 
     return prediction.item() != label, pertubation, steps, queries
+
+
+def predict(model, image: torch.Tensor) -> Union[torch.Tensor, torch.Tensor]:
+    """Simple helper function to predict class (with probability)"""
+    logits = model(image.unsqueeze(0))
+    probabilities = torch.nn.functional.softmax(logits[0], dim=0)
+    probability, prediction = torch.topk(probabilities, 1)
+    return probability, prediction
