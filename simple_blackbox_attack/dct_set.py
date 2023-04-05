@@ -17,7 +17,7 @@ class DCTSearchVectors(SearchVectors):
             raise ValueError(f"size = (3, w, h) or size = (1, w, h). Passed image has dimensions {size}")
         self.size = size
         self.frequency_dimensions = [
-            (i, j, k) for i in range(3) for j in range(int(size[0] * ratio)) for k in range(int(size[1] * ratio))
+            (i, j, k) for i in range(3) for j in range(int(size[1] * ratio)) for k in range(int(size[2] * ratio))
         ]
 
     def get_random_vector(self) -> torch.Tensor:
