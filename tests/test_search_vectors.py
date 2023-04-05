@@ -1,6 +1,8 @@
 """Testing suites for the search vector classes for the simple black box attack"""
 
+import numpy as np
 import torch
+from torch.linalg import vector_norm
 
 from simple_blackbox_attack.cartesian_set import CartesianSearchVectors
 from simple_blackbox_attack.dct_set import DCTSearchVectors
@@ -21,9 +23,9 @@ def test_cartesian_get_correct_search_vector():
     vector2 = base.get_random_vector()
     vector3 = base.get_random_vector()
 
-    assert vector1.sum().item() == 1
-    assert vector2.sum().item() == 1
-    assert vector3.sum().item() == 1
+    assert np.isclose(vector_norm(vector1).numpy(), 1)
+    assert np.isclose(vector_norm(vector2).numpy(), 1)
+    assert np.isclose(vector_norm(vector3).numpy(), 1)
 
     assert not vector1.equal(vector2)
     assert not vector1.equal(vector3)
