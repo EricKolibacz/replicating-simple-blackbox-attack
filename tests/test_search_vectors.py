@@ -3,7 +3,7 @@
 import torch
 
 from simple_blackbox_attack.cartesian_set import CartesianSearchVectors
-from simple_blackbox_attack.simple_blackbox_attack import DCTSearchVectors
+from simple_blackbox_attack.dct_set import DCTSearchVectors
 
 IMAGE = torch.zeros((3, 8, 8))
 RATIO = 0.8
