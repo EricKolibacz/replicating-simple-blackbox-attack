@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "replicating-simple-blackbox-attack"
-version = "0.1.4"
+version = "0.1.5"
 description = "Replicating the code and results of the paper \"Simple Black-box Adversarial Attacks\""
 authors = ["Eric Kolibacz"]
 license = "MIT license"
@@ -30,6 +30,7 @@ nbqa = "^1.7.0"
 
 [tool.poetry.group.testing.dependencies]
 pytest = "^7.2.2"
+pytest-cov = "^4.0.0"
 
 [build-system]
 requires = ["poetry-core"]
