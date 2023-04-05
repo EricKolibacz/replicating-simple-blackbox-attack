@@ -12,14 +12,12 @@ class DCTSearchVectors(SearchVectors):
     """Search Vectors with base derived from the discrete cosine transform.
     Defined by Guo et al. 2018."""
 
-    def __init__(self, size: torch.Size, ratio: float, color_dimension: int = 2) -> None:
+    def __init__(self, size: torch.Size, ratio: float) -> None:
+        if size[0] != 3 and size[0] != 1:
+            raise ValueError(f"size = (3, w, h) or size = (1, w, h). Passed image has dimensions {size}")
         self.size = size
-        self.pixel_dimensions = [i for i in range(3) if i != color_dimension]
         self.frequency_dimensions = [
-            (k, i, j)
-            for k in range(3)
-            for i in range(int(size[self.pixel_dimensions[0]] * ratio))
-            for j in range(int(size[self.pixel_dimensions[1]] * ratio))
+            (i, j, k) for i in range(3) for j in range(int(size[0] * ratio)) for k in range(int(size[1] * ratio))
         ]
 
     def get_random_vector(self) -> torch.Tensor:
@@ -28,7 +26,7 @@ class DCTSearchVectors(SearchVectors):
         dimension = self.frequency_dimensions.pop(random.randrange(len(self.frequency_dimensions)))
         frequency_coefficients = np.zeros(self.size)
         frequency_coefficients[dimension] = 1.0
-        return torch.from_numpy(self.idct_2d(frequency_coefficients)).type(torch.LongTensor)
+        return torch.from_numpy(self.idct_2d(frequency_coefficients))
 
     def idct_2d(self, frequency_coefficients: np.array) -> np.array:
         """2 dimension discrete cosine transform (DCT)
@@ -40,7 +38,7 @@ class DCTSearchVectors(SearchVectors):
             np.array: signal in 2D image space
         """
         return idct(
-            idct(frequency_coefficients.T, axis=self.pixel_dimensions[0], norm="ortho").T,
-            axis=self.pixel_dimensions[1],
+            idct(frequency_coefficients.T, axis=1, norm="ortho").T,
+            axis=2,
             norm="ortho",
         )
