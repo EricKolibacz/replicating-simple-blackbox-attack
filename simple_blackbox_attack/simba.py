@@ -28,7 +28,7 @@ def simba(
         int: number of base vectors included in the pertubation
         int: number of queries sent to the model
     """
-    device = model.get_device()
+    device = image.get_device()
     pertubation: torch.Tensor = torch.zeros(image.shape).to(device)
 
     probability, prediction = predict(model, image.to(device))
