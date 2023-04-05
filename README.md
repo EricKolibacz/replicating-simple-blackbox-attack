@@ -1,6 +1,6 @@
 # replicating-simple-blackbox-attack
 
-
+[![Coverage Status](https://coveralls.io/repos/github/EricKolibacz/replicating-simple-blackbox-attack/badge.svg?branch=main)](https://coveralls.io/github/EricKolibacz/replicating-simple-blackbox-attack?branch=main)
 ![Code Style Checks](https://github.com/EricKolibacz/replicating-simple-blackbox-attack/actions/workflows/code_style.yml/badge.svg)
 ![Python Tests](https://github.com/EricKolibacz/replicating-simple-blackbox-attack/actions/workflows/python_tests.yml/badge.svg)
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
