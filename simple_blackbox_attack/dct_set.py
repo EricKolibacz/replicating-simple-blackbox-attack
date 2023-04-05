@@ -26,7 +26,7 @@ class DCTSearchVectors(SearchVectors):
         dimension = self.frequency_dimensions.pop(random.randrange(len(self.frequency_dimensions)))
         frequency_coefficients = np.zeros(self.size)
         frequency_coefficients[dimension] = 1.0
-        return torch.from_numpy(self.idct_2d(frequency_coefficients))
+        return torch.from_numpy(self.idct_2d(frequency_coefficients)).float()
 
     def idct_2d(self, frequency_coefficients: np.array) -> np.array:
         """2 dimension discrete cosine transform (DCT)
