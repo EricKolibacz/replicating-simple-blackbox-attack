@@ -1,13 +1,17 @@
 """Functionality to receive data from the ImageNet dataset"""
 
 import json
+import os
 from os import path
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 from mat4py import loadmat
 from PIL import Image
 from torch.utils.data import Dataset
+
+FILE_LOCATION = Path(__file__).parent.absolute()
 
 
 class ImageNetDataSet(Dataset):
@@ -20,7 +24,7 @@ class ImageNetDataSet(Dataset):
 
         self.meta = pd.DataFrame.from_dict(loadmat(meta_file)["synsets"])
         self.meta.set_index("WNID", inplace=True)
-        with open("imagenet_class_index.json", "r", encoding="utf-8") as file:
+        with open(os.path.join(str(FILE_LOCATION) + "/imagenet_class_index.json"), "r", encoding="utf-8") as file:
             pytorch_label_indices = json.load(file)
 
         for label, (wnid, label_str) in pytorch_label_indices.items():

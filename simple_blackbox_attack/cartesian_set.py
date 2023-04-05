@@ -8,6 +8,7 @@ import torch
 from simple_blackbox_attack.set_interface import SearchVectors
 
 
+# pylint: disable-msg=R0903
 class CartesianSearchVectors(SearchVectors):
     """Search Vectors with cartesian base."""
 
