@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "replicating-simple-blackbox-attack"
-version = "0.1.1"
+version = "0.1.2"
 description = "Replicating the code and results of the paper \"Simple Black-box Adversarial Attacks\""
 authors = ["Eric Kolibacz"]
 license = "MIT license"
