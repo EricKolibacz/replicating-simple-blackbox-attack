@@ -20,6 +20,7 @@ def simba(
         budget (float): the budget of pertubation allowed
 
     Returns:
+        bool: was the attack successful
         torch.Tensor: pertubation
         int: number of base vectors included in the pertubation
         int: number of queries sent to the model
@@ -52,4 +53,4 @@ def simba(
                 probability = probability_perturbed
                 prediction = prediction_perturbed
 
-    return pertubation, steps, queries
+    return prediction.item() != label, pertubation, steps, queries
