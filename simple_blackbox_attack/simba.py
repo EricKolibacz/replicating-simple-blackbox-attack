@@ -32,7 +32,11 @@ def simba(
 
     steps, queries = 0, 0
     while prediction.item() == label and steps + 1 < (budget / step_size) ** 2:
-        search_vector = basis.get_random_vector()
+        try:
+            search_vector = basis.get_random_vector()
+        except IndexError:
+            print("Evaluated all vectors")
+            break
         for alpha in [-step_size, step_size]:
             pertubed_image: torch.Tensor = image + pertubation + alpha * search_vector
 
