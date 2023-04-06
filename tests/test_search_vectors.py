@@ -1,6 +1,7 @@
 """Testing suites for the search vector classes for the simple black box attack"""
 
 import numpy as np
+import pytest
 import torch
 from torch.linalg import vector_norm
 
@@ -46,6 +47,16 @@ def test_cartesian_vector_type():
     vector = base.get_random_vector()
 
     assert vector.dtype == torch.float
+
+
+def test_cartesian_vector_not_enough_vectors():
+    """Testing if cartesian search vector class raises error as soon as no search vectors are left"""
+    base = CartesianSearchVectors(IMAGE.size())
+    for _ in range(IMAGE.numel()):
+        base.get_random_vector()
+
+    with pytest.raises(IndexError):
+        base.get_random_vector()
 
 
 def test_dct_correctly_initialized():
@@ -109,3 +120,37 @@ def test_inverse_dct_2d():
 
     assert np.isclose(image[0, :, :], np.array([[0.5, 0.5], [-0.5, -0.5]])).all()
     assert np.allclose(image[1:2, :, :], 0.0)
+
+
+def test_inverse_dct_2d_gray_image():
+    """Testing if dct class has a valid inverse dct in 2D for gray images (dimensions (1, w, h))"""
+    gray_image = torch.zeros((1, 8, 8))
+    base = DCTSearchVectors(gray_image.size(), RATIO)
+
+    frequency_coefficient = np.zeros((1, 2, 2))
+    frequency_coefficient[0, 0, 0] = 1.0
+    image = base.idct_2d(frequency_coefficient)
+
+    assert np.allclose(image[0, :, :], 0.5)
+
+    frequency_coefficient = np.zeros((1, 2, 2))
+    frequency_coefficient[0, 1, 0] = 1.0
+    image = base.idct_2d(frequency_coefficient)
+
+    assert np.isclose(image[0, :, :], np.array([[0.5, 0.5], [-0.5, -0.5]])).all()
+
+
+def test_dct_vector_not_enough_vectors():
+    """Testing if dct search vector class raises error as soon as no search vectors are left"""
+    base = DCTSearchVectors(IMAGE.size(), RATIO)
+
+    with pytest.raises(IndexError):
+        for _ in range(IMAGE.numel() + 1):
+            base.get_random_vector()
+
+
+def test_dct_error_for_wrong_input_dims():
+    """Testing if dct search vector class raises error as soon as no search vectors are left"""
+    image_with_wrong_dimension = torch.zeros((8, 8, 3))
+    with pytest.raises(ValueError):
+        DCTSearchVectors(image_with_wrong_dimension.size(), RATIO)
