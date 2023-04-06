@@ -58,6 +58,8 @@ def simba(
                 probability = probability_perturbed
                 prediction = prediction_perturbed
 
+    l2_norm.append(vector_norm(pertubation.cpu()))
+
     return prediction.item() != label, pertubation, steps, queries, l2_norm
 
 
