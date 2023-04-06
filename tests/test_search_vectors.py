@@ -129,3 +129,10 @@ def test_dct_vector_not_enough_vectors():
     with pytest.raises(IndexError):
         for _ in range(IMAGE.numel() + 1):
             base.get_random_vector()
+
+
+def test_dct_error_for_wrong_input_dims():
+    """Testing if dct search vector class raises error as soon as no search vectors are left"""
+    image_with_wrong_dimension = torch.zeros((8, 8, 3))
+    with pytest.raises(ValueError):
+        DCTSearchVectors(image_with_wrong_dimension.size(), RATIO)
