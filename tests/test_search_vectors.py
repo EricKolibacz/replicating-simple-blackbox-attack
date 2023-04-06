@@ -1,6 +1,7 @@
 """Testing suites for the search vector classes for the simple black box attack"""
 
 import numpy as np
+import pytest
 import torch
 from torch.linalg import vector_norm
 
@@ -46,6 +47,16 @@ def test_cartesian_vector_type():
     vector = base.get_random_vector()
 
     assert vector.dtype == torch.float
+
+
+def test_cartesian_vector_not_enough_vectors():
+    """Testing if cartesian search vector class raises error as soon as no search vectors are left"""
+    base = CartesianSearchVectors(IMAGE.size())
+    for _ in range(IMAGE.numel()):
+        base.get_random_vector()
+
+    with pytest.raises(IndexError):
+        base.get_random_vector()
 
 
 def test_dct_correctly_initialized():
@@ -109,3 +120,12 @@ def test_inverse_dct_2d():
 
     assert np.isclose(image[0, :, :], np.array([[0.5, 0.5], [-0.5, -0.5]])).all()
     assert np.allclose(image[1:2, :, :], 0.0)
+
+
+def test_dct_vector_not_enough_vectors():
+    """Testing if dct search vector class raises error as soon as no search vectors are left"""
+    base = DCTSearchVectors(IMAGE.size(), RATIO)
+
+    with pytest.raises(IndexError):
+        for _ in range(IMAGE.numel() + 1):
+            base.get_random_vector()
