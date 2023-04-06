@@ -122,6 +122,24 @@ def test_inverse_dct_2d():
     assert np.allclose(image[1:2, :, :], 0.0)
 
 
+def test_inverse_dct_2d_gray_image():
+    """Testing if dct class has a valid inverse dct in 2D for gray images (dimensions (1, w, h))"""
+    gray_image = torch.zeros((1, 8, 8))
+    base = DCTSearchVectors(gray_image.size(), RATIO)
+
+    frequency_coefficient = np.zeros((1, 2, 2))
+    frequency_coefficient[0, 0, 0] = 1.0
+    image = base.idct_2d(frequency_coefficient)
+
+    assert np.allclose(image[0, :, :], 0.5)
+
+    frequency_coefficient = np.zeros((1, 2, 2))
+    frequency_coefficient[0, 1, 0] = 1.0
+    image = base.idct_2d(frequency_coefficient)
+
+    assert np.isclose(image[0, :, :], np.array([[0.5, 0.5], [-0.5, -0.5]])).all()
+
+
 def test_dct_vector_not_enough_vectors():
     """Testing if dct search vector class raises error as soon as no search vectors are left"""
     base = DCTSearchVectors(IMAGE.size(), RATIO)
