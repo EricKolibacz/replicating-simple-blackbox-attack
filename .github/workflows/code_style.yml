@@ -46,7 +46,7 @@ jobs:
         poetry run pylint */*.py
     - name: Lint jupyter notebooks
       run: |  # black has own jupyter notebook support
-        poetry run nbqa black */*.ipynb
-        poetry run nbqa isort */*.ipynb
-        poetry run nbqa pylint */*.ipynb
-        poetry run nbqa pycodestyle */*.ipynb
+        poetry run nbqa black */*.ipynb *.ipynb
+        poetry run nbqa isort */*.ipynb *.ipynb
+        poetry run nbqa pylint */*.ipynb *.ipynb
+        poetry run nbqa pycodestyle */*.ipynb *.ipynb
