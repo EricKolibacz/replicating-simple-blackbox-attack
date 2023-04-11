@@ -19,7 +19,7 @@ class ImageNetDataSet(Dataset):
 
     def __init__(self, image_root, label_file, meta_file: str, transform=None):
         self.image_root = image_root
-        self.labels = np.fromfile(label_file, sep="\n")
+        self.labels = np.fromfile(label_file, sep="\n").astype(np.int64)
         self.transform = transform
 
         self.meta = pd.DataFrame.from_dict(loadmat(meta_file)["synsets"])

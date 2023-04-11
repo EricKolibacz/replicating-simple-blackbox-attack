@@ -3,6 +3,7 @@
 from typing import Union
 
 import torch
+from torch.linalg import vector_norm
 
 from simple_blackbox_attack.set_interface import SearchVectors
 
@@ -33,7 +34,7 @@ def simba(
 
     probability, prediction = predict(model, image.to(device))
 
-    steps, queries = 0, 0
+    steps, queries, l2_norm = 0, 0, []
     while prediction.item() == label and steps + 1 < (budget / step_size) ** 2:
         try:
             search_vector = basis.get_random_vector().to(device)
@@ -50,11 +51,16 @@ def simba(
                 if steps % 512 == 0:
                     print(f"{steps}: Label probability {probability.item():.4f} - queries {queries}")
                 steps += 1
+
                 pertubation += alpha * search_vector
+                if queries % 64 == 0:
+                    l2_norm.append(vector_norm(pertubation.cpu()))
                 probability = probability_perturbed
                 prediction = prediction_perturbed
 
-    return prediction.item() != label, pertubation, steps, queries
+    l2_norm.append(vector_norm(pertubation.cpu()))
+
+    return prediction.item() != label, pertubation, steps, queries, l2_norm
 
 
 def predict(model, image: torch.Tensor) -> Union[torch.Tensor, torch.Tensor]:
